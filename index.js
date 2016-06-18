@@ -32,7 +32,6 @@
                     if (!replaceIfExists) {
                         throw new Error('To replace existing widget, set replaceIfExists option to \'true\'');
                     }
-                    console.log('Post upload conflict, trying to update existing widget...');
                     return put(serviceAddress + '/viewer/widgets',
                         {
                             body: options.zipFile,
