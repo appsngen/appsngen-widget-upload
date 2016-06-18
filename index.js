@@ -49,7 +49,6 @@
                 switch (response.statusCode) {
                     case 200:
                     case 201:
-                        console.log('Upload success!');
                         options.urn = JSON.parse(response.body).urn;
                         return Promise.resolve(options.urn);
                     case 400:
