@@ -15,9 +15,9 @@
         var replaceIfExists = settings.replaceIfExists;
         var options = {};
 
-        return readFile(zipFilePath, 'binary')
-            .then(function (zipData) {
-                options.zipFile = new Buffer(zipData, 'binary');
+        return readFile(zipFilePath)
+            .then(function uploadWidget(zipFile) {
+                options.zipFile = zipFile;
                 return post(serviceAddress + '/viewer/widgets',
                     {
                         body: options.zipFile,
@@ -27,10 +27,11 @@
                         }
                     });
             })
-            .then(function (response) {
+            .then(function reuploadWidget(response) {
                 if (response.statusCode === 409) {
                     if (!replaceIfExists) {
-                        throw new Error('To replace existing widget, set replaceIfExists option to \'true\'');
+                        return Promise.reject(new Error('To replace existing widget,' +
+                            ' set replaceIfExists option to \'true\''));
                     }
                     return put(serviceAddress + '/viewer/widgets',
                         {
@@ -44,7 +45,7 @@
                     return Promise.resolve(response);
                 }
             })
-            .then(function (response) {
+            .then(function postProcessing(response) {
                 switch (response.statusCode) {
                     case 200:
                     case 201:
